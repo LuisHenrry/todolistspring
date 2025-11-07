@@ -6,8 +6,9 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-# Etapa de execução (rodar o jar)
-FROM eclipse-temurin:21-jdk
+
+FROM openjdk:21-jdk
+
 
 WORKDIR /app
 EXPOSE 8080
