@@ -1,16 +1,17 @@
-FROM ubuntu:lastest AS build
+# Etapa de build (construir o jar)
+FROM maven:3.9.8-eclipse-temurin-21 AS build
 
-RUN apt-get update
-RUN apt-get install openjdl-21-jdk -y
-
+WORKDIR /app
 COPY . .
 
-RUN apt-get install maven -y
-RUN mvn clean install
+RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-slim
+# Etapa de execução (rodar o jar)
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
 EXPOSE 8080
 
-COPY --from=build /target/todolist-1.0.0-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
